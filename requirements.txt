@@ -1,0 +1,4 @@
+python -m venv venv
+source venv/bin/activate   # Linux/Mac
+.\venv\Scripts\Activate.ps1  # Windows
+pip install -r requirements.txt

@@ -1,0 +1,11 @@
+/* Opcional: sombras y transición para mensajes */
+[data-x-loading] {
+    opacity: 0.6;
+}
+
+/* Mensajes con efecto suave */
+.bg-blue-500, .bg-gray-200 {
+    transition: all 0.3s ease;
+}
+
+

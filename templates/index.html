@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="es" x-data="chatApp()">
+<head>
+    <meta charset="UTF-8">
+    <title>ProductBuddy</title>
+    <script src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js" defer></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100 p-6">
+
+<div class="max-w-lg mx-auto bg-white p-4 rounded shadow">
+    <h1 class="text-2xl font-bold mb-4 text-center">ProductBuddy</h1>
+
+    <!-- Chat window -->
+    <div class="mb-4 h-80 overflow-y-auto border rounded p-2" x-ref="chatWindow">
+        <template x-for="msg in messages" :key="msg.id">
+            <div class="mb-4">
+                <div class="font-semibold mb-1" x-text="msg.user"></div>
+                
+                <!-- Usuario normal -->
+                <template x-if="msg.type === 'text'">
+                    <div class="ml-2" x-text="msg.text"></div>
+                </template>
+
+                <!-- Respuesta de IA con productos -->
+                <template x-if="msg.type === 'products'">
+                    <div class="space-y-2">
+                        <template x-for="product in msg.products" :key="product.id">
+                            <div class="border p-2 rounded shadow-sm bg-gray-50">
+                                <div class="font-bold" x-text="product.product_name"></div>
+                                <div class="text-sm text-gray-700" x-text="product.description"></div>
+                                <div class="text-sm text-gray-900 mt-1">
+                                    Precio: $<span x-text="product.price"></span> | Stock: <span x-text="product.stock"></span>
+                                </div>
+                            </div>
+                        </template>
+                    </div>
+                </template>
+            </div>
+        </template>
+    </div>
+
+    <!-- Input -->
+    <div class="flex">
+        <input type="text" x-model="inputMessage" @keydown.enter="sendMessage" 
+               class="flex-1 border rounded p-2" placeholder="Escribe tu pregunta...">
+        <button @click="sendMessage" class="ml-2 bg-blue-500 text-white px-4 py-2 rounded">Enviar</button>
+    </div>
+</div>
+
+<script>
+function chatApp() {
+    return {
+        inputMessage: '',
+        messages: [],
+        async sendMessage() {
+            if (!this.inputMessage.trim()) return;
+
+            // Mensaje del usuario
+            this.messages.push({id: Date.now(), user: 'Tú', type: 'text', text: this.inputMessage});
+            let userMessage = this.inputMessage;
+            this.inputMessage = '';
+
+            // Llamada al endpoint Flask
+            let response = await fetch('/ask_product', {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({message: userMessage})
+            });
+            let data = await response.json();
+
+            // Parseamos productos si vienen en el formato esperado
+            try {
+                let products = JSON.parse(data.response); // suponiendo que la IA devuelve JSON
+                this.messages.push({id: Date.now()+1, user: 'Asistente', type: 'products', products});
+            } catch {
+                // Si no es JSON, lo mostramos como texto normal
+                this.messages.push({id: Date.now()+1, user: 'Asistente', type: 'text', text: data.response});
+            }
+
+            this.$nextTick(() => this.$refs.chatWindow.scrollTop = this.$refs.chatWindow.scrollHeight);
+        }
+    }
+}
+</script>
+
+</body>
+</html>
