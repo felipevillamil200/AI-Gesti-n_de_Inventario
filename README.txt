@@ -1,3 +1,13 @@
+## 🖼️ Ejemplos visuales de gestión de inventario
+
+Estas imágenes ilustran cómo se ve una plataforma moderna de gestión de inventario. No pertenecen directamente a ProductBuddy, pero ayudan a entender su propósito.
+
+![Dashboard de inventario](https://www.gstatic.com/webp/gallery/1.jpg)
+![Productos en stock](https://www.gstatic.com/webp/gallery/2.jpg)
+![Interfaz de gestión](https://www.gstatic.com/webp/gallery/3.jpg)
+
+> Las imágenes son ilustrativas y provienen de Google. Puedes reemplazarlas por capturas reales de tu proyecto cuando esté en funcionamiento.
+
 =============================
 ProductBuddy - Guía de Instalación
 =============================
